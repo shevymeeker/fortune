@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="theme-color" content="#0d0b09">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="mobile-web-app-capable" content="yes">
+    <link rel="manifest" href="/manifest-fortune-cookie.json">
+    <link rel="apple-touch-icon" href="/icons/icon-192.png">
+    <title>Fortune Cookie</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&family=Instrument+Serif:ital@0;1&family=Space+Mono:wght@400;700&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&family=Instrument+Serif:ital@0;1&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet"></noscript>
+
+    <style>
+        *, *::before, *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #0d0b09;
+            color: #d4c9a8;
+            font-family: 'DM Sans', Georgia, sans-serif;
+            min-height: 100vh;
+            min-height: 100dvh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px calc(40px + env(safe-area-inset-bottom, 0px));
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* ── Home nav ── */
+        .home-nav {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            z-index: 20;
+            padding: 14px 20px;
+            display: flex;
+            align-items: center;
+            background: rgba(13,11,9,.85);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(45,41,34,.7);
+        }
+
+        .home-btn {
+            background: transparent;
+            border: 1px solid rgba(45,41,34,.9);
+            border-radius: 4px;
+            padding: 5px 10px;
+            font-size: 10px;
+            font-family: 'Space Mono', monospace;
+            font-weight: 700;
+            letter-spacing: .1em;
+            text-transform: uppercase;
+            color: #9a9390;
+            text-decoration: none;
+            transition: border-color .2s, color .2s;
+        }
+        .home-btn:hover { border-color: #d4a830; color: #d4a830; }
+
+        /* Star field */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background-image:
+                radial-gradient(1px 1px at 12% 18%, rgba(220, 200, 140, 0.55) 0%, transparent 100%),
+                radial-gradient(1px 1px at 38% 7%,  rgba(220, 200, 140, 0.4)  0%, transparent 100%),
+                radial-gradient(1px 1px at 63% 22%, rgba(220, 200, 140, 0.5)  0%, transparent 100%),
+                radial-gradient(1px 1px at 82% 11%, rgba(220, 200, 140, 0.35) 0%, transparent 100%),
+                radial-gradient(1px 1px at 5%  55%, rgba(220, 200, 140, 0.4)  0%, transparent 100%),
+                radial-gradient(1px 1px at 91% 44%, rgba(220, 200, 140, 0.45) 0%, transparent 100%),
+                radial-gradient(1px 1px at 27% 72%, rgba(220, 200, 140, 0.35) 0%, transparent 100%),
+                radial-gradient(1px 1px at 74% 68%, rgba(220, 200, 140, 0.5)  0%, transparent 100%),
+                radial-gradient(1px 1px at 48% 88%, rgba(220, 200, 140, 0.4)  0%, transparent 100%),
+                radial-gradient(1px 1px at 19% 93%, rgba(220, 200, 140, 0.3)  0%, transparent 100%),
+                radial-gradient(1.5px 1.5px at 55% 50%, rgba(220, 200, 140, 0.6) 0%, transparent 100%),
+                radial-gradient(1px 1px at 88% 82%, rgba(220, 200, 140, 0.4)  0%, transparent 100%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* Ambient glow */
+        body::after {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background: radial-gradient(ellipse 60% 50% at 50% 50%, rgba(90, 60, 20, 0.12), transparent 70%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* ── Page content ── */
+        .page-content {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            max-width: 600px;
+            gap: 0;
+        }
+
+        /* ── Header ── */
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        h1 {
+            font-size: clamp(28px, 7vw, 48px);
+            font-weight: 400;
+            letter-spacing: 2px;
+            color: #e8c96a;
+            text-shadow: 0 0 40px rgba(232, 201, 106, 0.3);
+            margin-bottom: 8px;
+            font-style: italic;
+            font-family: 'Instrument Serif', Georgia, serif;
+        }
+
+        .subtitle {
+            font-size: 10px;
+            letter-spacing: .2em;
+            text-transform: uppercase;
+            color: rgba(212, 185, 130, 0.45);
+            font-family: 'Space Mono', monospace;
+        }
+
+        /* ── Section tabs ── */
+        .section-tabs {
+            display: flex;
+            gap: 6px;
+            justify-content: center;
+            margin: 14px 0 10px;
+        }
+
+        .tab-btn {
+            background: transparent;
+            border: 1px solid rgba(45, 41, 34, 0.9);
+            border-radius: 3px;
+            padding: 5px 14px;
+            font-size: 9px;
+            font-family: 'Space Mono', monospace;
+            font-weight: 700;
+            letter-spacing: .1em;
+            text-transform: uppercase;
+            color: rgba(154, 147, 144, 0.6);
+            cursor: pointer;
+            transition: border-color .2s, color .2s;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .tab-btn:hover {
+            border-color: rgba(200, 165, 75, 0.35);
+            color: rgba(200, 165, 75, 0.7);
+        }
+
+        .tab-btn.active {
+            border-color: rgba(200, 165, 75, 0.55);
+            color: #c9a84c;
+        }
+
+        /* ── Flip card ── */
+        .flip-card-wrapper {
+            width: 100%;
+            perspective: 1200px;
+            margin-bottom: 36px;
+        }
+
+        .flip-card-inner {
+            position: relative;
+            width: 100%;
+            min-height: 140px;
+            transform-style: preserve-3d;
+            transition: transform 0.65s cubic-bezier(0.4, 0.2, 0.2, 1);
+        }
+
+        .flip-card-inner.has-content { cursor: pointer; }
+        .flip-card-inner.is-flipped  { transform: rotateY(180deg); }
+
+        /* ── Card faces (shared) ── */
+        .card-face {
+            width: 100%;
+            background: #f5ede0;
+            border: 1px solid rgba(160, 120, 50, 0.35);
+            border-radius: 4px;
+            padding: 40px 36px 44px;
+            position: relative;
+            min-height: 140px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            backface-visibility: hidden;
+            -webkit-backface-visibility: hidden;
+            transition: border-color .25s, opacity .25s;
+        }
+
+        .flip-card-inner.has-content:hover .card-face {
+            border-color: rgba(140, 100, 30, 0.55);
+        }
+
+        .card-face::before,
+        .card-face::after {
+            content: '';
+            position: absolute;
+            left: 20px;
+            right: 20px;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(150, 110, 40, 0.38), transparent);
+        }
+        .card-face::before { top: 10px; }
+        .card-face::after  { bottom: 10px; }
+
+        .card-face.fading { opacity: 0; }
+
+        /* Back face sits behind the front until flipped */
+        .card-back {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            transform: rotateY(180deg);
+        }
+
+        /* ── Front face content ── */
+        .card-content {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            width: 100%;
+        }
+
+        .card-content.empty { align-items: center; }
+
+        .empty-hint {
+            font-size: 10px;
+            letter-spacing: .2em;
+            color: rgba(80, 50, 10, 0.4);
+            font-family: 'Space Mono', monospace;
+            text-transform: uppercase;
+        }
+
+        #quote-text {
+            font-size: clamp(15px, 3.5vw, 18px);
+            font-style: italic;
+            color: #2c1f0e;
+            line-height: 1.85;
+            text-align: center;
+            text-shadow: none;
+            font-family: 'Instrument Serif', Georgia, serif;
+        }
+
+        /* ── Back face content ── */
+        .back-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            width: 100%;
+        }
+
+        .back-book {
+            font-size: clamp(17px, 4vw, 22px);
+            font-style: italic;
+            font-family: 'Instrument Serif', Georgia, serif;
+            color: #7a4a10;
+            text-align: center;
+            text-shadow: none;
+            line-height: 1.4;
+        }
+
+        .back-by {
+            font-size: 9px;
+            font-family: 'Space Mono', monospace;
+            letter-spacing: .25em;
+            text-transform: uppercase;
+            color: rgba(80, 50, 10, 0.5);
+            margin-top: 4px;
+        }
+
+        .back-author {
+            font-size: 12px;
+            font-family: 'Space Mono', monospace;
+            color: rgba(80, 50, 10, 0.75);
+            letter-spacing: .06em;
+            text-align: center;
+        }
+
+        /* ── Flip hints ── */
+        .flip-hint {
+            position: absolute;
+            bottom: 14px;
+            right: 18px;
+            font-size: 8px;
+            font-family: 'Space Mono', monospace;
+            letter-spacing: .12em;
+            text-transform: uppercase;
+            color: rgba(80, 50, 10, 0.35);
+            opacity: 0;
+            transition: opacity .4s;
+            pointer-events: none;
+            user-select: none;
+        }
+
+        .flip-card-inner.has-content .flip-hint { opacity: 1; }
+
+        /* ── Button ── */
+        button {
+            background: transparent;
+            border: 1px solid rgba(200, 165, 75, 0.4);
+            color: #c9a84c;
+            font-size: 10px;
+            font-family: 'Space Mono', monospace;
+            font-weight: 700;
+            letter-spacing: .14em;
+            text-transform: uppercase;
+            padding: 15px 36px;
+            min-height: 52px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background .2s, border-color .2s, color .2s, box-shadow .2s;
+            touch-action: manipulation;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        button:hover {
+            background: rgba(200, 165, 75, 0.08);
+            border-color: rgba(200, 165, 75, 0.65);
+            color: #e8c96a;
+            box-shadow: 0 0 20px rgba(200, 165, 75, 0.14);
+        }
+
+        button:active {
+            background: rgba(200, 165, 75, 0.15);
+        }
+
+        button:focus-visible {
+            outline: 2px solid rgba(200, 165, 75, 0.5);
+            outline-offset: 3px;
+        }
+
+        /* ── Footer ── */
+        footer {
+            margin-top: 44px;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            font-size: 11px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: rgba(200, 165, 75, 0.2);
+            text-align: center;
+        }
+
+        @media (max-width: 480px) {
+            .card-face { padding: 32px 22px 42px; }
+        }
+    </style>
+</head>
+<body>
+<nav class="home-nav">
+    <a class="home-btn" href="index.html">← Home</a>
+</nav>
+<div class="page-content" style="padding-top:56px">
+    <header>
+        <h1>Fortune Cookie</h1>
+        <div class="section-tabs">
+            <button class="tab-btn active" data-section="first-impressions" onclick="setSection('first-impressions')">First Impressions</button>
+            <button class="tab-btn" data-section="timeless-advice" onclick="setSection('timeless-advice')">Timeless Advice</button>
+        </div>
+        <p class="subtitle" id="subtitle">famous first lines from great books</p>
+    </header>
+
+    <main>
+        <div class="flip-card-wrapper">
+            <div class="flip-card-inner" id="flipInner" onclick="handleCardClick()">
+                <div class="card-face card-front" id="cardFront" aria-live="polite" aria-atomic="true">
+                    <div class="card-content empty" id="cardContent">
+                        <span class="empty-hint">tap the button for your fortune</span>
+                    </div>
+                    <span class="flip-hint" aria-hidden="true">flip for source ↺</span>
+                </div>
+                <div class="card-face card-back" id="cardBack">
+                    <div class="back-content" id="backContent"></div>
+                    <span class="flip-hint" aria-hidden="true">↺ flip back</span>
+                </div>
+            </div>
+        </div>
+        <button type="button" onclick="crackCookie()">Crack Open a Cookie 🍪</button>
+    </main>
+
+    <footer>
+        <div>Every great story starts with a single line.</div>
+    </footer>
+</div>
+
+<script>
+    /* ── Timeless Advice: parsed at runtime from raw text ── */
+    const ADVICE_RAW = `Do not leave your nose unattended in a barbershop. — The Nose by Nikolai Gogol
+Do not follow a rabbit down a hole, regardless of its tailoring. — Alice's Adventures in Wonderland by Lewis Carroll
+Do not bury your wife in the cellar if you have not secured the cat. — The Black Cat by Edgar Allan Poe
+If your dinner host keeps offering you meat pies, eat the vegetables. — The String of Pearls (Sweeney Todd) by James Malcolm Rymer and Thomas Peckett Prest
+Do not invite a pig to manage your farm. — Animal Farm by George Orwell
+Avoid staring at yellow wallpaper for extended periods. — The Yellow Wallpaper by Charlotte Perkins Gilman
+Never let a talking raven dictate your interior decor. — The Raven by Edgar Allan Poe
+Avoid eating Turkish Delight offered by strangers in sleighs. — The Lion, the Witch and the Wardrobe by C.S. Lewis
+The most dangerous women are the ones knitting near the guillotine. — A Tale of Two Cities by Charles Dickens
+A sudden transformation into a giant bug is a valid reason to miss work. — The Metamorphosis by Franz Kafka
+Never duel a man who eats cherries while you take your aim. — The Shot by Alexander Pushkin
+A successful marriage requires checking the attic for hidden relatives. — Jane Eyre by Charlotte Brontë
+If the local villagers invite you to a midsummer gathering with a wicker statue, leave. — The Wicker Man by Robin Hardy and Anthony Shaffer
+Avoid accepting an invitation to a house party on a secluded island with nine other strangers. — And Then There Were None by Agatha Christie
+Do not sleep in a house where the architecture leans naturally away from the sun. — The Haunting of Hill House by Shirley Jackson
+If your older sister poisons the sugar bowl, learn to drink your coffee black. — We Have Always Lived in the Castle by Shirley Jackson
+Never accept a winter caretaking job in a hotel that requires you to check the boiler. — The Shining by Stephen King
+Burying your dead cat in the rocky soil past the deadfall will not yield the results you want. — Pet Sematary by Stephen King
+If your biggest fan rescues you from a car crash, secure all heavy blunt objects. — Misery by Stephen King
+A clown waiting in a storm drain is never a municipal employee. — It by Stephen King
+Ignore the geometry of the sunken city, even if it hurts your eyes. — The Call of Cthulhu by H.P. Lovecraft
+Do not insist on hearing the heartbeat under the floorboards if the police are already leaving. — The Tell-Tale Heart by Edgar Allan Poe
+A crack in the family estate's masonry is best solved by moving out immediately. — The Fall of the House of Usher by Edgar Allan Poe
+Never trust a scientist who requires fresh graves to complete his coursework. — Frankenstein by Mary Shelley
+A charming foreign count who refuses to use a mirror is a terrible houseguest. — Dracula by Bram Stoker
+Do not consume potions mixed by a doctor who has recently changed his posture and voice. — The Strange Case of Dr. Jekyll and Mr. Hyde by Robert Louis Stevenson
+Storing your rotting, murderous portrait in the attic only delays the inevitable. — The Picture of Dorian Gray by Oscar Wilde
+If the previous wife drowned in the bay, do not wear her old raincoat. — Rebecca by Daphne du Maurier
+Flocks of aggressive seagulls are not a weather anomaly, they are an eviction notice. — The Birds by Daphne du Maurier
+The children you are nannying do not need to commune with the previous staff. — The Turn of the Screw by Henry James
+Do not attend a court hearing for a crime no one will explain to you. — The Trial by Franz Kafka
+An execution machine that tattoos the sentence into your skin is a poor mechanism for justice. — In the Penal Colony by Franz Kafka
+A ghost who complains about his missing overcoat just wants you to freeze. — The Overcoat by Nikolai Gogol
+A library containing every possible combination of letters is a terrible place to find a specific answer. — The Library of Babel by Jorge Luis Borges
+A traveling carnival arriving in October always charges more than the price of admission. — Something Wicked This Way Comes by Ray Bradbury
+Firemen who start fires instead of putting them out should not be allowed near your bookshelves. — Fahrenheit 451 by Ray Bradbury
+Do not drink the vitamin smoothies provided by your overly helpful, elderly neighbors. — Rosemary's Baby by Ira Levin
+If the women in your new neighborhood are flawless and never blink, pack your bags. — The Stepford Wives by Ira Levin
+Solving a mysterious puzzle box will not summon friendly local locksmiths. — The Hellbound Heart by Clive Barker
+Do not blow the conch shell if the choir boys have already sharpened their spears. — Lord of the Flies by William Golding
+A scientist swathed in bandages wearing dark glasses indoors is hiding terrible table manners. — The Invisible Man by H.G. Wells
+Avoid islands where the local wildlife recites the law to you. — The Island of Dr. Moreau by H.G. Wells
+Do not read the second act of the play if you wish to retain your sanity. — The King in Yellow by Robert W. Chambers
+A handsome Wall Street executive with a predilection for Huey Lewis and plastic tarps is not a good dinner date. — American Psycho by Bret Easton Ellis
+A treasure hunt organized by your missing wife is a trap. — Gone Girl by Gillian Flynn
+Do not start a bare-knuckle boxing ring with a man who does not exist. — Fight Club by Chuck Palahniuk
+Asking a cannibalistic psychiatrist for profiling advice will cost you a few organs. — The Silence of the Lambs by Thomas Harris
+A school field trip that begins with explosive collars is not strictly educational. — Battle Royale by Koushun Takami
+Fortifying your house against the nocturnal undead is useless if you forget to check the basement. — I Am Legend by Richard Matheson
+Be suspicious of small towns that insist you draw a slip of paper from a black wooden box. — The Lottery by Shirley Jackson
+A key that bleeds when you drop it means the locked room should remain locked. — The Bloody Chamber by Angela Carter
+Do not trade your voice to a sea witch in exchange for legs that feel like walking on glass. — The Little Mermaid by Hans Christian Andersen
+If your husband's former wives all disappeared, do not ask what is in the tower. — Bluebeard by Charles Perrault
+A frozen club of lamb makes an excellent murder weapon and a terrible dinner. — Lamb to the Slaughter by Roald Dahl
+Do not attend a convention of women who despise children and wear itchy wigs. — The Witches by Roald Dahl
+A mysterious stranger who buys your shadow will not return it. — Peter Schlemihl by Adelbert von Chamisso
+Do not build an artificial woman out of sand and magic to replace your deceased lover. — The Sandman by E.T.A. Hoffmann
+When navigating a labyrinth, bring your own string so you do not have to rely on a monster. — The House of Asterion by Jorge Luis Borges
+Do not trust an automated nursery to properly discipline your children. — The Veldt by Ray Bradbury
+Avoid taking a job at a company that strictly monitors how often you use the bathroom and what you think about. — 1984 by George Orwell
+A beautiful woman living alone in a decrepit castle is rarely just lonely. — Carmilla by Sheridan Le Fanu
+Do not accept a monkey's paw from an old soldier who warns you it is cursed. — The Monkey's Paw by W.W. Jacobs
+A ship sailing without a crew should be left to drift. — The Narrative of Arthur Gordon Pym of Nantucket by Edgar Allan Poe
+Walking carnivorous plants should not be kept as garden novelties. — The Day of the Triffids by John Wyndham
+Do not board a train run entirely by the ghosts of dead passengers. — The Signal-Man by Charles Dickens
+A doctor who experiments with reviving the dead will eventually need your parts. — Herbert West–Reanimator by H.P. Lovecraft
+Avoid hiring a rat-catcher whose flute music appeals heavily to local children. — The Pied Piper of Hamelin by Robert Browning
+A man offering to cure your sickness by replacing your organs with machinery is not a licensed physician. — The Man That Was Used Up by Edgar Allan Poe
+Do not sign a ledger in blood for a man claiming to represent your darkest desires. — The Monk by Matthew G. Lewis
+A portrait gallery of your ancestors is a poor place to hide during a thunderstorm. — The Castle of Otranto by Horace Walpole
+Do not volunteer to watch over a dead body for three nights in a rural church. — The Viy by Nikolai Gogol
+A mysterious epidemic that causes blindness is best avoided by not looking at anyone. — Blindness by José Saramago
+If your village suddenly decides a giant rhinoceros is a normal neighbor, pack your bags. — Rhinoceros by Eugène Ionesco
+Do not accept an invitation to a hunting party where the prey runs on two legs. — The Most Dangerous Game by Richard Connell
+A swamp creature composed of mud and revenge is not a reliable security system. — The Golem by Gustav Meyrink
+Do not read the diary of a madman out loud if you wish to remain calm. — Diary of a Madman by Nikolai Gogol
+A beautiful, ruined abbey is a terrible place to hide from an inquisitive monk. — The Italian by Ann Radcliffe
+Do not trust a sentient ocean to accurately recreate your dead wife. — Solaris by Stanisław Lem
+A mysterious color that falls from the sky and mutates the farm animals should not be treated as fertilizer. — The Colour Out of Space by H.P. Lovecraft
+Avoid exploring ancient, subterranean ruins guarded by albino penguins. — At the Mountains of Madness by H.P. Lovecraft
+Do not steal a ruby from the forehead of a cursed idol, no matter the resale value. — The Moonstone by Wilkie Collins
+A hospital where the patients never seem to get better or leave is not a place for convalescence. — The Magic Mountain by Thomas Mann
+Do not trust a totalitarian government that insists two and two make five. — 1984 by George Orwell
+Do not accept a glass of rare wine from a man holding a trowel. — The Cask of Amontillado by Edgar Allan Poe
+Avoid coastal towns where the locals have unusually wide mouths and unblinking eyes. — The Shadow Over Innsmouth by H.P. Lovecraft
+Do not bury stolen treasure under a tree marked with a skull, expecting to dig it up peacefully. — Treasure Island by Robert Louis Stevenson
+A man who claims he has discovered a way to travel to the fourth dimension usually forgets how to get back. — The Time Machine by H.G. Wells
+If the local reverend starts wearing a black veil over his face permanently, do not ask him for a blessing. — The Minister's Black Veil by Nathaniel Hawthorne
+Do not trust a beautiful woman who turns into a fox when the moon is full. — Lady into Fox by David Garnett
+Avoid staying in a room where the previous occupant was mysteriously crushed by the ceiling. — The Pit and the Pendulum by Edgar Allan Poe
+If the wax figures in the museum resemble the victims of recent murders, do not work the night shift. — The Wax Works by Charles Belden
+Do not gamble with a Russian officer who aims a gun at his own head for sport. — The Fatalist by Mikhail Lermontov
+A boarding school that harvests organs from its students is not providing a standard education. — Never Let Me Go by Kazuo Ishiguro
+Do not ignore the omens when the family dog suddenly refuses to enter the nursery. — The Omen by David Seltzer
+If your toddler intentionally destroys your home office, lock up the archery equipment. — We Need to Talk About Kevin by Lionel Shriver
+A mechanical hound programmed to track your scent is not a suitable pet. — Fahrenheit 451 by Ray Bradbury
+Do not trust a religious sect that forces women to wear red cloaks and white bonnets. — The Handmaid's Tale by Margaret Atwood
+Avoid scientific expeditions into an anomaly that warps DNA and mimics human voices. — Annihilation by Jeff VanderMeer
+Do not attempt to murder your exact double, as you share the same vital organs. — William Wilson by Edgar Allan Poe`;
+
+    const TIMELESS_ADVICE = ADVICE_RAW.trim().split('\n').filter(l => l.trim()).map(line => {
+        const sep = ' \u2014 ';
+        const sepIdx = line.indexOf(sep);
+        if (sepIdx === -1) return null;
+        const advice = line.substring(0, sepIdx);
+        const attribution = line.substring(sepIdx + sep.length);
+        const byIdx = attribution.lastIndexOf(' by ');
+        if (byIdx === -1) return { quote: advice, source: attribution, author: '' };
+        return { quote: advice, source: attribution.substring(0, byIdx), author: attribution.substring(byIdx + 4) };
+    }).filter(Boolean);
+
+    const LINES = [
+        { quote: "Where's Papa going with that ax?", source: "Charlotte's Web", author: "E.B. White" },
+        { quote: "All children, except one, grow up.", source: "Peter Pan", author: "J.M. Barrie" },
+        { quote: "There is no lake at Camp Green Lake.", source: "Holes", author: "Louis Sachar" },
+        { quote: "If you are interested in stories with happy endings, you would be better off reading some other book.", source: "A Series of Unfortunate Events: The Bad Beginning", author: "Lemony Snicket" },
+        { quote: "There was a boy called Eustace Clarence Scrubb, and he almost deserved it.", source: "The Voyage of the Dawn Treader", author: "C.S. Lewis" },
+        { quote: "Mr. and Mrs. Dursley, of number four, Privet Drive, were proud to say that they were perfectly normal, thank you very much.", source: "Harry Potter and the Sorcerer's Stone", author: "J.K. Rowling" },
+        { quote: "Look, I didn't want to be a half-blood.", source: "The Lightning Thief", author: "Rick Riordan" },
+        { quote: "In a hole in the ground there lived a hobbit.", source: "The Hobbit", author: "J.R.R. Tolkien" },
+        { quote: "It was a dark and stormy night.", source: "A Wrinkle in Time", author: "Madeleine L'Engle" },
+        { quote: "Once there were four children whose names were Peter, Susan, Edmund and Lucy.", source: "The Lion, the Witch and the Wardrobe", author: "C.S. Lewis" },
+        { quote: "It's a funny thing about mothers and fathers.", source: "Matilda", author: "Roald Dahl" },
+        { quote: "The first week of August hangs at the very top of summer, the top of the live-long year, like the highest seat of a Ferris wheel when it pauses in its turning.", source: "Tuck Everlasting", author: "Natalie Babbitt" },
+        { quote: "Alice was beginning to get very tired of sitting by her sister on the bank, and of having nothing to do: once or twice she had peeped into the book her sister was reading, but it had no pictures or conversations in it, \u2018and what is the use of a book,\u2019 thought Alice \u2018without pictures or conversation?\u2019", source: "Alice's Adventures in Wonderland", author: "Lewis Carroll" },
+        { quote: "Here is Edward Bear, coming downstairs now, bump, bump, bump, on the back of his head, behind Christopher Robin.", source: "Winnie-the-Pooh", author: "A.A. Milne" },
+        { quote: "When Mary Lennox was sent to Misselthwaite Manor to live with her uncle everybody said she was the most disagreeable-looking child ever seen.", source: "The Secret Garden", author: "Frances Hodgson Burnett" },
+        { quote: "Once upon a time there were four little Rabbits, and their names were\u2014Flopsy, Mopsy, Cotton-tail, and Peter.", source: "The Tale of Peter Rabbit", author: "Beatrix Potter" },
+        { quote: "The night Max wore his wolf suit and made mischief of one kind and another his mother called him \u2018WILD THING!\u2019", source: "Where the Wild Things Are", author: "Maurice Sendak" },
+        { quote: "There was a hand in the darkness, and it held a knife.", source: "The Graveyard Book", author: "Neil Gaiman" },
+        { quote: "Until he was four years old, James Henry Trotter had had a happy life.", source: "James and the Giant Peach", author: "Roald Dahl" },
+        { quote: "These two very old people are the father and mother of Mr. Bucket.", source: "Charlie and the Chocolate Factory", author: "Roald Dahl" },
+        { quote: "Lyra and her d\u00e6mon moved through the darkening Hall, taking care to keep to one side, out of sight of the kitchen.", source: "The Golden Compass", author: "Philip Pullman" },
+        { quote: "Ba-room, ba-room, ba-room, baripity, baripity, baripity, baripity\u2014Good.", source: "Bridge to Terabithia", author: "Katherine Paterson" },
+        { quote: "Mrs. Rachel Lynde lived just where the Avonlea main road dipped down into a little hollow, fringed with alders and ladies\u2019 eardrops and traversed by a brook\u2026", source: "Anne of Green Gables", author: "L.M. Montgomery" },
+        { quote: "Harriet was trying to explain to Sport how to play Town.", source: "Harriet the Spy", author: "Louise Fitzhugh" },
+        { quote: "Squire Trelawney, Dr. Livesey, and the rest of these gentlemen having asked me to write down the whole particulars about Treasure Island\u2026", source: "Treasure Island", author: "Robert Louis Stevenson" },
+        { quote: "The Mole had been working very hard all the morning, spring-cleaning his little home.", source: "The Wind in the Willows", author: "Kenneth Grahame" },
+        { quote: "\u2018Christmas won\u2019t be Christmas without any presents,\u2019 grumbled Jo, lying on the rug.", source: "Little Women", author: "Louisa May Alcott" },
+        { quote: "There was once a boy named Milo who didn\u2019t know what to do with himself\u2014not just sometimes, but always.", source: "The Phantom Tollbooth", author: "Norton Juster" },
+        { quote: "Coraline discovered the door a little while after they moved into the house.", source: "Coraline", author: "Neil Gaiman" },
+        { quote: "Sophie couldn\u2019t sleep.", source: "The BFG", author: "Roald Dahl" },
+        { quote: "The first place that I can well remember was a large pleasant meadow with a pond of clear water in it.", source: "Black Beauty", author: "Anna Sewell" },
+        { quote: "Buck did not read the newspapers, or he would have known that trouble was brewing\u2026", source: "The Call of the Wild", author: "Jack London" },
+        { quote: "My name is India Opal Buloni, and last summer my daddy, the preacher, sent me to the store for a box of macaroni-and-cheese, some white rice, and two tomatoes and I came back with a dog.", source: "Because of Winn-Dixie", author: "Kate DiCamillo" },
+        { quote: "When Mrs. Frederick C. Little\u2019s second son arrived, everybody noticed that he was not much bigger than a mouse.", source: "Stuart Little", author: "E.B. White" },
+        { quote: "There were dragons when I was a boy.", source: "How to Train Your Dragon", author: "Cressida Cowell" },
+        { quote: "When I wake up, the other side of the bed is cold.", source: "The Hunger Games", author: "Suzanne Collins" },
+        { quote: "That fool of a fairy Lucinda did not intend to lay a curse on me.", source: "Ella Enchanted", author: "Gail Carson Levine" },
+        { quote: "If you want to find Cherry Tree Lane all you have to do is ask the Policeman at the cross-roads.", source: "Mary Poppins", author: "P.L. Travers" },
+        { quote: "When I stepped out into the bright sunlight from the darkness of the movie house, I had only two things on my mind: Paul Newman and a ride home.", source: "The Outsiders", author: "S.E. Hinton" },
+        { quote: "Once on a dark winter\u2019s day, when the yellow fog hung so thick and heavy in the streets of London that the lamps were lighted and the shop windows blazed with gas as they do at night, an odd-looking little girl sat in a cab with her father and was driven rather slowly through the big thoroughfares.", source: "A Little Princess", author: "Frances Hodgson Burnett" },
+        { quote: "When he was nearly thirteen, my brother Jem got his arm badly broken at the elbow.", source: "To Kill a Mockingbird", author: "Harper Lee" },
+        { quote: "Way out at the end of a tiny little town was an old overgrown garden, and in the garden was an old house, and in the house lived Pippi Longstocking.", source: "Pippi Longstocking", author: "Astrid Lindgren" },
+        { quote: "This is my favorite book in all the world, though I have never read it.", source: "The Princess Bride", author: "William Goldman" },
+        { quote: "I\u2019ll race you to the corner, Ellen!", source: "Number the Stars", author: "Lois Lowry" },
+        { quote: "It was almost December, and Jonas was beginning to be frightened.", source: "The Giver", author: "Lois Lowry" },
+        { quote: "\u2018Little Man, would you come on? You keep it up and you\u2019re gonna make us late.\u2019", source: "Roll of Thunder, Hear My Cry", author: "Mildred D. Taylor" },
+        { quote: "At the top of the key, I\u2019m moving and grooving, popping and rocking\u2026", source: "The Crossover", author: "Kwame Alexander" },
+        { quote: "In fairy-tales, witches always wear silly black hats and black cloaks, and they ride on broomsticks.", source: "The Witches", author: "Roald Dahl" },
+        { quote: "If there\u2019s any justice in the world, Nick Allen would not be a teacher\u2019s pet.", source: "Frindle", author: "Andrew Clements" },
+        { quote: "Are you there God? It\u2019s me, Margaret.", source: "Are You There God? It's Me, Margaret.", author: "Judy Blume" },
+        { quote: "Claudia knew that she could never pull off the old-fashioned kind of running away.", source: "From the Mixed-Up Files of Mrs. Basil E. Frankweiler", author: "E.L. Konigsburg" },
+        { quote: "Brian Robeson stared out the window of the small plane at the endless green northern wilderness below.", source: "Hatchet", author: "Gary Paulsen" },
+        { quote: "Not every thirteen-year-old girl is accused of murder, brought to trial, and found guilty.", source: "The True Confessions of Charlotte Doyle", author: "Avi" },
+        { quote: "The day Shiloh come, we\u2019re having us a big Sunday dinner.", source: "Shiloh", author: "Phyllis Reynolds Naylor" },
+        { quote: "\u2018Did Mama sing every day?\u2019 asked Caleb.", source: "Sarah, Plain and Tall", author: "Patricia MacLachlan" },
+        { quote: "They say Maniac Magee was born in a dump.", source: "Maniac Magee", author: "Jerry Spinelli" },
+        { quote: "This story begins within the walls of a castle, with the birth of a mouse.", source: "The Tale of Despereaux", author: "Kate DiCamillo" },
+        { quote: "The story I am about to share with you takes place in 1931, under the roofs of Paris.", source: "The Invention of Hugo Cabret", author: "Brian Selznick" },
+        { quote: "Words.", source: "Out of My Mind", author: "Sharon M. Draper" },
+        { quote: "I know I\u2019m not an ordinary ten-year-old kid.", source: "Wonder", author: "R.J. Palacio" },
+        { quote: "A jellyfish, if you watch it long enough, begins to look like a heart beating.", source: "The Thing About Jellyfish", author: "Ali Benjamin" },
+        { quote: "I am born on a Tuesday at University Hospital / Columbus, Ohio, / USA\u2014 / a country caught / between Black and White.", source: "Brown Girl Dreaming", author: "Jacqueline Woodson" },
+        { quote: "\u2018Aguantate tantito y la fruta caera en tu mano,\u2019 he said.", source: "Esperanza Rising", author: "Pam Mu\u00f1oz Ryan" },
+        { quote: "A told B, / and B told C, / \u2018I\u2019ll meet you at the top / of the coconut tree.\u2019", source: "Chicka Chicka Boom Boom", author: "Bill Martin Jr. and John Archambault" },
+        { quote: "Mr. and Mrs. Mallard were looking for a place to live.", source: "Make Way for Ducklings", author: "Robert McCloskey" },
+        { quote: "In the great green room / There was a telephone / And a red balloon / And a picture of\u2014 / The cow jumping over the moon.", source: "Goodnight Moon", author: "Margaret Wise Brown" },
+        { quote: "In the light of the moon a little egg lay on a leaf.", source: "The Very Hungry Caterpillar", author: "Eric Carle" },
+        { quote: "If you give a mouse a cookie, he\u2019s going to ask for a glass of milk.", source: "If You Give a Mouse a Cookie", author: "Laura Numeroff" },
+        { quote: "In an old house in Paris that was covered with vines lived twelve little girls in two straight lines.", source: "Madeline", author: "Ludwig Bemelmans" },
+        { quote: "At the far end of town / where the Grickle-grass grows / and the wind smells slow-and-sour when it blows / and no birds ever sing excepting old crows\u2026 / is the Street of the Lifted Lorax.", source: "The Lorax", author: "Dr. Seuss" },
+        { quote: "I am Sam.", source: "Green Eggs and Ham", author: "Dr. Seuss" },
+        { quote: "The sun did not shine.", source: "The Cat in the Hat", author: "Dr. Seuss" },
+        { quote: "There is a place where the sidewalk ends / And before the street begins\u2026", source: "Where the Sidewalk Ends", author: "Shel Silverstein" },
+        { quote: "Sylvester Duncan lived with his mother and father at Acorn Road in Oatsdale.", source: "Sylvester and the Magic Pebble", author: "William Steig" },
+        { quote: "One winter morning Peter woke up and looked out the window.", source: "The Snowy Day", author: "Ezra Jack Keats" },
+        { quote: "Hi! I\u2019m the bus driver.", source: "Don't Let the Pigeon Drive the Bus!", author: "Mo Willems" },
+        { quote: "Once there was a peddler who sold caps.", source: "Caps for Sale", author: "Esphyr Slobodkina" },
+        { quote: "Frog ran up the path to Toad\u2019s house.", source: "Frog and Toad Are Friends", author: "Arnold Lobel" },
+        { quote: "This is George. He lived in Africa. He was a good little monkey and always very curious.", source: "Curious George", author: "H.A. Rey" },
+        { quote: "Once upon a time in Spain there was a little bull and his name was Ferdinand.", source: "The Story of Ferdinand", author: "Munro Leaf" },
+        { quote: "One evening, after thinking it over for some time, Harold decided to go for a walk in the moonlight.", source: "Harold and the Purple Crayon", author: "Crockett Johnson" },
+        { quote: "\u2018Oh, Amelia Bedelia, your first day of work, and I can\u2019t be here,\u2019 said Mrs. Rogers.", source: "Amelia Bedelia", author: "Peggy Parish" },
+        { quote: "Ramona Quimby was not a slowpoke.", source: "Ramona the Pest", author: "Beverly Cleary" },
+        { quote: "Dear Mr. Henshaw, My teacher read your book about the dog to our class.", source: "Dear Mr. Henshaw", author: "Beverly Cleary" },
+        { quote: "I remember the day the Aleut ship came to our island.", source: "Island of the Blue Dolphins", author: "Scott O'Dell" },
+        { quote: "I am on my mountain in a tree home that people have passed without ever knowing that I am here.", source: "My Side of the Mountain", author: "Jean Craighead George" },
+        { quote: "The sun sets in the west (just about everyone knows that), but Sunset Towers faced east.", source: "The Westing Game", author: "Ellen Raskin" },
+        { quote: "At my house, rules are everywhere.", source: "Rules", author: "Cynthia Lord" },
+        { quote: "Gramps says that I am a country girl at heart, and that is true.", source: "Walk Two Moons", author: "Sharon Creech" },
+        { quote: "I am Ivan. I am a gorilla.", source: "The One and Only Ivan", author: "Katherine Applegate" },
+        { quote: "I noticed several weird things about the surf-boarding cat.", source: "Crenshaw", author: "Katherine Applegate" },
+        { quote: "Raymie Clarke realized that everything, absolutely everything, depended on her.", source: "Raymie Nightingale", author: "Kate DiCamillo" },
+        { quote: "Flora Belle Buckman was in her room at her desk.", source: "Flora & Ulysses", author: "Kate DiCamillo" },
+        { quote: "Here we go again.", source: "Bud, Not Buddy", author: "Christopher Paul Curtis" },
+        { quote: "First the colors.", source: "The Book Thief", author: "Markus Zusak" },
+        { quote: "The island of Gont, a single mountain that lifts its peak a mile above the storm-racked Northeast Sea, is a land famous for wizards.", source: "A Wizard of Earthsea", author: "Ursula K. Le Guin" },
+        { quote: "\u2018Too many,\u2019 James said, and he stamped his feet.", source: "The Dark Is Rising", author: "Susan Cooper" },
+        { quote: "Matthias cut a comical little figure as he wobbled his way along the cloisters, with his large sandals flip-flopping and his tail peeping from beneath the baggy folds of an oversized novice\u2019s habit.", source: "Redwall", author: "Brian Jacques" },
+        { quote: "He began his new life standing up, surrounded by cold darkness and stale, dusty air.", source: "The Maze Runner", author: "James Dashner" },
+        { quote: "There was a ship.", source: "Peter and the Starcatchers", author: "Dave Barry and Ridley Pearson" },
+    ];
+
+    // ── State ──────────────────────────────────────────────────────────────────
+    let activeSection = 'first-impressions';
+    let pool          = [];
+    let poolIndex     = 0;
+    let cardState     = 'empty'; // 'empty' | 'front' | 'back'
+    let isAnimating   = false;
+
+    const flipInner   = document.getElementById('flipInner');
+    const cardFront   = document.getElementById('cardFront');
+    const cardContent = document.getElementById('cardContent');
+    const backContent = document.getElementById('backContent');
+
+    // ── Helpers ────────────────────────────────────────────────────────────────
+    function shuffle(arr) {
+        const a = arr.slice();
+        for (let i = a.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [a[i], a[j]] = [a[j], a[i]];
+        }
+        return a;
+    }
+
+    function nextLine() {
+        const dataset = activeSection === 'first-impressions' ? LINES : TIMELESS_ADVICE;
+        if (poolIndex >= pool.length) { pool = shuffle(dataset); poolIndex = 0; }
+        return pool[poolIndex++];
+    }
+
+    // ── Section switching ──────────────────────────────────────────────────────
+    function setSection(section) {
+        if (section === activeSection) return;
+        activeSection = section;
+        pool = []; poolIndex = 0;
+
+        flipInner.classList.remove('is-flipped', 'has-content');
+        cardState = 'empty';
+        cardContent.classList.add('empty');
+        cardContent.innerHTML = '<span class="empty-hint">tap the button for your fortune</span>';
+        backContent.innerHTML = '';
+
+        document.querySelectorAll('.tab-btn').forEach(btn =>
+            btn.classList.toggle('active', btn.dataset.section === section)
+        );
+        document.getElementById('subtitle').textContent =
+            section === 'first-impressions'
+                ? 'famous first lines from great books'
+                : 'cautionary wisdom from great books';
+    }
+
+    // ── Cookie reveal ──────────────────────────────────────────────────────────
+    function crackCookie() {
+        if (isAnimating) return;
+        if (cardState === 'back') {
+            isAnimating = true;
+            flipInner.classList.remove('is-flipped');
+            cardState = 'front';
+            setTimeout(() => { isAnimating = false; showNewCookie(); }, 680);
+        } else {
+            showNewCookie();
+        }
+    }
+
+    function showNewCookie() {
+        cardFront.classList.add('fading');
+        setTimeout(() => {
+            const line = nextLine();
+            cardContent.classList.remove('empty');
+            cardContent.innerHTML = `<p id="quote-text">\u201c${line.quote}\u201d</p>`;
+            backContent.innerHTML =
+                `<div class="back-book">${line.source}</div>` +
+                `<div class="back-by">by</div>` +
+                `<div class="back-author">${line.author}</div>`;
+            flipInner.classList.add('has-content');
+            cardState = 'front';
+            requestAnimationFrame(() => cardFront.classList.remove('fading'));
+        }, 260);
+    }
+
+    // ── Card flip on click ─────────────────────────────────────────────────────
+    function handleCardClick() {
+        if (cardState === 'empty' || isAnimating) return;
+        isAnimating = true;
+        if (cardState === 'front') {
+            flipInner.classList.add('is-flipped');
+            cardState = 'back';
+        } else {
+            flipInner.classList.remove('is-flipped');
+            cardState = 'front';
+        }
+        setTimeout(() => { isAnimating = false; }, 680);
+    }
+
+    if ('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js').catch(function(){});
+</script>
+</body>
+</html>
