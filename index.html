@@ -372,7 +372,7 @@
         <h1>Fortune Cookie</h1>
         <div class="section-tabs">
             <button class="tab-btn active" data-section="first-impressions" onclick="setSection('first-impressions')">First Impressions</button>
-            <button class="tab-btn" data-section="timeless-advice" onclick="setSection('timeless-advice')">Timeless Advice</button>
+            <button class="tab-btn" data-section="cautionary-wisdom" onclick="setSection('timeless-advice')">Cautionary Wisdom</button>
         </div>
         <p class="subtitle" id="subtitle">famous first words</p>
     </header>
@@ -382,7 +382,7 @@
             <div class="flip-card-inner" id="flipInner" onclick="handleCardClick()">
                 <div class="card-face card-front" id="cardFront" aria-live="polite" aria-atomic="true">
                     <div class="card-content empty" id="cardContent">
-                        <span class="empty-hint">tap the button for your fortune</span>
+                        <span class="empty-hint">tap the button for your famous first words</span>
                     </div>
                     <span class="flip-hint" aria-hidden="true">flip for source ↺</span>
                 </div>
@@ -401,7 +401,7 @@
 </div>
 
 <script>
-    /* ── Timeless Advice: parsed at runtime from raw text ── */
+    /* ── Cautionary Wisdom: parsed at runtime from raw text ── */
     const ADVICE_RAW = `Do not leave your nose unattended in a barbershop. — The Nose by Nikolai Gogol
 Do not follow a rabbit down a hole, regardless of its tailoring. — Alice's Adventures in Wonderland by Lewis Carroll
 Do not bury your wife in the cellar if you have not secured the cat. — The Black Cat by Edgar Allan Poe
@@ -653,7 +653,7 @@ Do not attempt to murder your exact double, as you share the same vital organs. 
         flipInner.classList.remove('is-flipped', 'has-content');
         cardState = 'empty';
         cardContent.classList.add('empty');
-        cardContent.innerHTML = '<span class="empty-hint">tap the button for your fortune</span>';
+        cardContent.innerHTML = '<span class="empty-hint">tap the button to begin</span>';
         backContent.innerHTML = '';
 
         document.querySelectorAll('.tab-btn').forEach(btn =>
