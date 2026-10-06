@@ -1,7 +1,7 @@
 {
   "name": "Fortune Cookie",
   "short_name": "Fortune Cookie",
-  "description": "Offline literary fortune cookie — famous first lines and timeless advice from great books.",
+  "description": "Offline literary fortune cookie — famous first words and timeless advice.",
   "start_url": "/fortune-cookie.html",
   "scope": "/",
   "display": "standalone",
