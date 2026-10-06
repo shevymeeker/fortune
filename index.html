@@ -374,7 +374,7 @@
             <button class="tab-btn active" data-section="first-impressions" onclick="setSection('first-impressions')">First Impressions</button>
             <button class="tab-btn" data-section="timeless-advice" onclick="setSection('timeless-advice')">Timeless Advice</button>
         </div>
-        <p class="subtitle" id="subtitle">famous first lines from great books</p>
+        <p class="subtitle" id="subtitle">famous first words</p>
     </header>
 
     <main>
@@ -392,11 +392,11 @@
                 </div>
             </div>
         </div>
-        <button type="button" onclick="crackCookie()">Crack Open a Cookie 🍪</button>
+        <button type="button" onclick="crackCookie()">Flip a card</button>
     </main>
 
     <footer>
-        <div>Every great story starts with a single line.</div>
+        <div>Famous first words</div>
     </footer>
 </div>
 
@@ -661,8 +661,8 @@ Do not attempt to murder your exact double, as you share the same vital organs. 
         );
         document.getElementById('subtitle').textContent =
             section === 'first-impressions'
-                ? 'famous first lines from great books'
-                : 'cautionary wisdom from great books';
+                ? 'famous first words'
+                : 'cautionary wisdom';
     }
 
     // ── Cookie reveal ──────────────────────────────────────────────────────────
