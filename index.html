@@ -130,12 +130,7 @@
 
 <body class="bg-void text-gold-400 font-sans min-h-screen flex flex-col items-center justify-center relative overflow-x-hidden selection:bg-gold-500 selection:text-void p-6 pt-24 pb-safe">
 
-    <!-- Navigation -->
-    <nav class="fixed top-0 left-0 right-0 z-20 px-6 py-4 flex items-center bg-void/80 backdrop-blur-md border-b border-gold-600/20">
-        <button onclick="navigateHome()" class="bg-transparent border border-gold-600/40 rounded px-3 py-1.5 text-[10px] font-mono font-bold tracking-[0.1em] uppercase text-gray-400 hover:text-gold-500 hover:border-gold-500 transition-all focus:outline-none focus:ring-1 focus:ring-gold-500">
-            ← Home
-        </button>
-    </nav>
+    
 
     <div class="w-full max-w-xl z-10 flex flex-col items-center gap-8 animate-float" style="animation-duration: 8s;">
         
@@ -150,12 +145,12 @@
                     First Impressions
                 </button>
                 <button class="tab-btn px-4 py-1.5 rounded text-[10px] font-mono font-bold tracking-widest uppercase border border-gold-600/30 text-gray-400 hover:text-gold-400 hover:border-gold-500/50 transition-all focus:outline-none" data-section="timeless-advice" onclick="setSection('timeless-advice')">
-                    Timeless Advice
+                    Cautionary Wisdom
                 </button>
             </div>
             
             <p id="subtitle" class="text-[10px] font-mono tracking-[0.2em] uppercase text-gold-400/50">
-                famous first lines from great books
+                famous first lines
             </p>
         </header>
 
@@ -169,12 +164,12 @@
                     
                     <div id="cardContent" class="flex flex-col items-center justify-center w-full h-full">
                         <span class="text-[10px] font-mono tracking-[0.2em] uppercase text-ink/40 text-center">
-                            tap the button for your fortune
+                            crack fortune
                         </span>
                     </div>
 
                     <span class="absolute bottom-3 right-4 text-[8px] font-mono tracking-widest uppercase text-ink/30 opacity-0 group-[.has-content]:opacity-100 transition-opacity">
-                        flip for source ↺
+                        flip me ↺
                     </span>
                 </div>
 
@@ -213,14 +208,14 @@
             <button type="button" id="crackBtn" onclick="crackCookie()" class="mt-14 group relative px-8 py-4 bg-transparent border border-gold-500/40 text-gold-500 text-[11px] font-mono font-bold tracking-[0.15em] uppercase rounded-md overflow-hidden transition-all hover:border-gold-400 hover:text-gold-300 hover:shadow-glow focus:outline-none active:scale-95">
                 <div class="absolute inset-0 bg-gold-500/10 translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-out"></div>
                 <span class="relative flex items-center gap-2">
-                    Crack Open a Cookie <span class="text-base group-hover:rotate-12 transition-transform duration-300">🥠</span>
+                    Crack Fortune <span class="text-base group-hover:rotate-12 transition-transform duration-300">🥠</span>
                 </span>
             </button>
         </main>
 
         <!-- Footer -->
         <footer class="text-[10px] font-mono tracking-[0.2em] uppercase text-gold-500/20 text-center mt-auto">
-            Every great story starts with a single line.
+            Every great story has to startsomewhere
         </footer>
     </div>
 
@@ -229,14 +224,7 @@
         Quote Copied!
     </div>
 
-    <!-- Message Box Overlay (replaces alert) -->
-    <div id="messageBox" class="fixed inset-0 z-50 bg-void/80 backdrop-blur-sm hidden flex items-center justify-center p-6 opacity-0 transition-opacity duration-300">
-        <div class="bg-paper border border-gold-600/30 shadow-paper p-8 rounded-md max-w-sm w-full text-center flex flex-col items-center gap-4 transform scale-95 transition-transform duration-300" id="messageBoxInner">
-            <h3 class="font-serif italic text-2xl text-ink">Navigation</h3>
-            <p class="font-mono text-xs text-ink/70">In a full application, this would route you back to the home page.</p>
-            <button onclick="closeMessageBox()" class="mt-4 px-6 py-2 border border-gold-500 text-gold-600 font-mono text-[10px] uppercase tracking-widest rounded hover:bg-gold-500/10 transition-colors">
-                Understood
-            </button>
+    
         </div>
     </div>
 
@@ -354,7 +342,7 @@ Do not attempt to murder your exact double, as you share the same vital organs. 
         }).filter(Boolean);
 
         const LINES = [
-            { quote: "Where's Papa going with that ax?", source: "Charlotte's Web", author: "E.B. White" },
+            { quote: "Where's Papa going with that axe?", source: "Charlotte's Web", author: "E.B. White" },
             { quote: "All children, except one, grow up.", source: "Peter Pan", author: "J.M. Barrie" },
             { quote: "There is no lake at Camp Green Lake.", source: "Holes", author: "Louis Sachar" },
             { quote: "If you are interested in stories with happy endings, you would be better off reading some other book.", source: "A Series of Unfortunate Events", author: "Lemony Snicket" },
@@ -416,7 +404,7 @@ Do not attempt to murder your exact double, as you share the same vital organs. 
         }
 
         function nextLine() {
-            const dataset = activeSection === 'first-impressions' ? LINES : TIMELESS_ADVICE;
+            const dataset = activeSection === 'first-impressions' ? LINES : Cautionary Wisdom;
             if (poolIndex >= pool.length) { pool = shuffle(dataset); poolIndex = 0; }
             return pool[poolIndex++];
         }
@@ -450,8 +438,8 @@ Do not attempt to murder your exact double, as you share the same vital organs. 
 
             document.getElementById('subtitle').textContent =
                 section === 'first-impressions'
-                    ? 'famous first lines from great books'
-                    : 'cautionary wisdom from great books';
+                    ? 'famous first lines'
+                    : 'cautionary wisdom';
         }
 
         function generateLuckyNumbers() {
